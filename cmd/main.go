@@ -47,8 +47,8 @@ const prompt = `
 `
 
 const promptMBTI = `
-- MBTIタイプの性格をもったあなたが童話「ももたろう」がどんな話か教えてください。
-- MBTIタイプ:%s
+- ペルソナに従い、童話「ももたろう」がどんな話か教えてください。
+- ペルソナ:MBTIタイプ>%s %s, 性格>%s
 - 文字数:50文字
 - 改行:句点ごとに改行
 `
@@ -58,7 +58,7 @@ func main() {
 	// OpenAI APIを使用し商品レビューを生成
 	key := os.Getenv("OPENAI_API_KEY")
 	if key == "" {
-		fmt.Println("環境変���OPENAI_API_KEYが設定されていません")
+		fmt.Println("OPENAI_API_KEY is not set")
 		return
 	}
 	client := openai.NewClient(key)
@@ -93,7 +93,7 @@ func main() {
 				Messages: []openai.ChatCompletionMessage{
 					{
 						Role:    "user",
-						Content: fmt.Sprintf(promptMBTI, mbti.MBTIType),
+						Content: fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description),
 					},
 				},
 				Temperature:      mbti.Temperature,
@@ -115,7 +115,7 @@ func main() {
 				Messages: []openai.ChatCompletionMessage{
 					{
 						Role:    "user",
-						Content: fmt.Sprintf(promptMBTI, mbti.MBTIType),
+						Content: fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description),
 					},
 				},
 			},
@@ -200,13 +200,13 @@ func main() {
 			normalResp.Usage.CompletionTokens,
 			normalResp.Usage.TotalTokens,
 			// MBTIパラメータありの結果
-			fmt.Sprintf(promptMBTI, mbti.MBTIType),
+			fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description),
 			mbtiParamResp.Choices[0].Message.Content,
 			mbtiParamResp.Usage.PromptTokens,
 			mbtiParamResp.Usage.CompletionTokens,
 			mbtiParamResp.Usage.TotalTokens,
 			// MBTIパラメータなしの結果
-			fmt.Sprintf(promptMBTI, mbti.MBTIType),
+			fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description),
 			mbtiNoParamResp.Choices[0].Message.Content,
 			mbtiNoParamResp.Usage.PromptTokens,
 			mbtiNoParamResp.Usage.CompletionTokens,

@@ -24,57 +24,55 @@
 
 
 ### Response
-桃から生まれた男の子、桃太郎は、鬼退治に出かけます。  
-犬、猿、雉を仲間にし、鬼ヶ島で鬼を倒して宝物を取り戻します。  
-村人たちに平和をもたらし、幸せに暮らしました。
+ももたろうは、桃から生まれた男の子の物語です。  
+彼は鬼を退治するため、犬、猿、キジと共に旅をします。  
+勇気と友情で鬼を倒し、村人に宝物を届けます。
 
 ### Token Usage
 | Category | Count |
 |----------|-------|
 | Prompt Tokens | 48 |
-| Completion Tokens | 75 |
-| Total Tokens | 123 |
+| Completion Tokens | 66 |
+| Total Tokens | 114 |
 
 ## MBTI Prompt with Parameters
 ### Prompt
 
-- MBTIタイプの性格をもったあなたが童話「ももたろう」がどんな話か教えてください。
-- MBTIタイプ:ISTP
+- ペルソナに従い、童話「ももたろう」がどんな話か教えてください。
+- ペルソナ:MBTIタイプ>ISTP 巨匠, 性格>大胆で実践的な実験者
 - 文字数:50文字
 - 改行:句点ごとに改行
 
 
 ### Response
-ももたろうは、桃から生まれた男の子。  
-犬、猿、雉と共に鬼ヶ島へ向かい、  
-鬼を倒して宝物を取り戻す。  
-勇敢で機転が利く冒険譚だよ。  
+「ももたろう」は、桃から生まれた男の子が鬼退治に出かける物語。  
+犬や猿、キジと共に仲間になり、勇敢に戦います。  
+友情や勇気がテーマです。
 
 ### Token Usage
 | Category | Count |
 |----------|-------|
-| Prompt Tokens | 66 |
-| Completion Tokens | 66 |
-| Total Tokens | 132 |
+| Prompt Tokens | 85 |
+| Completion Tokens | 61 |
+| Total Tokens | 146 |
 
 ## MBTI Prompt without Parameters
 ### Prompt
 
-- MBTIタイプの性格をもったあなたが童話「ももたろう」がどんな話か教えてください。
-- MBTIタイプ:ISTP
+- ペルソナに従い、童話「ももたろう」がどんな話か教えてください。
+- ペルソナ:MBTIタイプ>ISTP 巨匠, 性格>大胆で実践的な実験者
 - 文字数:50文字
 - 改行:句点ごとに改行
 
 
 ### Response
-ももたろうは、桃から生まれた勇敢な少年。  
-鬼退治のため、犬、猿、雉を仲間にする。  
-協力して鬼を打ち倒し、宝物を持ち帰る。  
-冒険と友情の物語。
+ももたろうは、桃から生まれた少年の物語。  
+鬼退治のため仲間を集め、冒険に出る。  
+大胆な戦略で鬼を打ち破り、村に平和をもたらす。
 
 ### Token Usage
 | Category | Count |
 |----------|-------|
-| Prompt Tokens | 66 |
-| Completion Tokens | 67 |
-| Total Tokens | 133 |
+| Prompt Tokens | 85 |
+| Completion Tokens | 60 |
+| Total Tokens | 145 |

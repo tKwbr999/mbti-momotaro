@@ -24,61 +24,57 @@
 
 
 ### Response
-ももたろうは、桃から生まれた男の子です。  
-彼は鬼を退治するために旅立ちます。  
-犬、猿、キジを仲間にし、鬼の島で戦います。  
-見事に勝利し、村に平和をもたらします。  
+昔々、桃から生まれた男の子、桃太郎がいました。  
+鬼ヶ島の鬼を退治するため、犬、猿、キジを仲間にします。  
+共に力を合わせて鬼を倒し、村に平和をもたらします。  
 
 ### Token Usage
 | Category | Count |
 |----------|-------|
 | Prompt Tokens | 48 |
-| Completion Tokens | 74 |
-| Total Tokens | 122 |
+| Completion Tokens | 68 |
+| Total Tokens | 116 |
 
 ## MBTI Prompt with Parameters
 ### Prompt
 
-- MBTIタイプの性格をもったあなたが童話「ももたろう」がどんな話か教えてください。
-- MBTIタイプ:ESFP
-- 文字数:50文字
-- 改行:句点ごとに改行
-
-
-### Response
-桃から生まれた桃太郎が、鬼ヶ島へ向かう話。  
-
-犬、猿、雉と友達になり協力する。  
-
-敵を打ち倒し、宝物を持ち帰る。  
-
-友情や勇気の大切さが描かれている。  
-
-### Token Usage
-| Category | Count |
-|----------|-------|
-| Prompt Tokens | 66 |
-| Completion Tokens | 70 |
-| Total Tokens | 136 |
-
-## MBTI Prompt without Parameters
-### Prompt
-
-- MBTIタイプの性格をもったあなたが童話「ももたろう」がどんな話か教えてください。
-- MBTIタイプ:ESFP
+- ペルソナに従い、童話「ももたろう」がどんな話か教えてください。
+- ペルソナ:MBTIタイプ>ESFP エンターテイナー, 性格>自由奔放で人生を楽しむ芸能人気質
 - 文字数:50文字
 - 改行:句点ごとに改行
 
 
 ### Response
 ももたろうは、桃から生まれた少年です。  
-彼は鬼ヶ島へ鬼退治に向かいます。  
-犬、猿、キジと共に冒険し、  
-仲間と力を合わせて勝利を収めます。  
+鬼退治に仲間を集めて冒険します！  
+勇気と友情で勝利し、村を救います。  
+心温まる楽しい物語です。
 
 ### Token Usage
 | Category | Count |
 |----------|-------|
-| Prompt Tokens | 66 |
-| Completion Tokens | 63 |
-| Total Tokens | 129 |
+| Prompt Tokens | 90 |
+| Completion Tokens | 58 |
+| Total Tokens | 148 |
+
+## MBTI Prompt without Parameters
+### Prompt
+
+- ペルソナに従い、童話「ももたろう」がどんな話か教えてください。
+- ペルソナ:MBTIタイプ>ESFP エンターテイナー, 性格>自由奔放で人生を楽しむ芸能人気質
+- 文字数:50文字
+- 改行:句点ごとに改行
+
+
+### Response
+桃から生まれた男の子、桃太郎が主人公。  
+鬼ヶ島の鬼たちを退治するために出発する。  
+仲間の犬、猿、キジと一緒に冒険を楽しむ！  
+みんなで力を合わせて、幸せを取り戻す。  
+
+### Token Usage
+| Category | Count |
+|----------|-------|
+| Prompt Tokens | 90 |
+| Completion Tokens | 74 |
+| Total Tokens | 164 |
