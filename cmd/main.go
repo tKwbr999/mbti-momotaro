@@ -143,47 +143,28 @@ func main() {
 | Presence Penalty | %.2f |
 | Max Tokens | %d |
 
-## Standard Prompt Response
-### Prompt
-%s
+## Responses Comparison
 
-### Response
-%s
+### Prompts
+| Type                     | Content |
+|--------------------------|---------|
+| Standard                 | %s      |
+| MBTI with Parameters      | %s      |
+| MBTI without Parameters   | %s      |
 
-### Token Usage
-| Category | Count |
-|----------|-------|
-| Prompt Tokens | %d |
-| Completion Tokens | %d |
-| Total Tokens | %d |
+### Generated Stories
+| Type                     | Response |
+|--------------------------|----------|
+| Standard                 | %s      |
+| MBTI with Parameters      | %s      |
+| MBTI without Parameters   | %s      |
 
-## MBTI Prompt with Parameters
-### Prompt
-%s
-
-### Response
-%s
-
-### Token Usage
-| Category | Count |
-|----------|-------|
-| Prompt Tokens | %d |
-| Completion Tokens | %d |
-| Total Tokens | %d |
-
-## MBTI Prompt without Parameters
-### Prompt
-%s
-
-### Response
-%s
-
-### Token Usage
-| Category | Count |
-|----------|-------|
-| Prompt Tokens | %d |
-| Completion Tokens | %d |
-| Total Tokens | %d |
+### Token Usage Comparison
+| Metric          | Standard | MBTI with Params | MBTI without Params |
+|-----------------|----------|------------------|---------------------|
+| Prompt Tokens    | %d       | %d               | %d                  |
+| Completion Tokens | %d       | %d               | %d                  |
+| Total Tokens     | %d       | %d               | %d                  |
 `,
 			mbti.MBTIType,
 			mbti.MBTIType,
@@ -193,30 +174,27 @@ func main() {
 			mbti.FrequencyPenalty,
 			mbti.PresencePenalty,
 			mbti.MaxTokens,
-			// 通常のプロンプト結果
-			prompt,
-			normalResp.Choices[0].Message.Content,
+			// プロンプト内容
+			formatMarkdown(prompt),
+			formatMarkdown(fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description)),
+			formatMarkdown(fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description)),
+			// 応答内容
+			formatMarkdown(normalResp.Choices[0].Message.Content),
+			formatMarkdown(mbtiParamResp.Choices[0].Message.Content),
+			formatMarkdown(mbtiNoParamResp.Choices[0].Message.Content),
+			// トークン使用量
 			normalResp.Usage.PromptTokens,
-			normalResp.Usage.CompletionTokens,
-			normalResp.Usage.TotalTokens,
-			// MBTIパラメータありの結果
-			fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description),
-			mbtiParamResp.Choices[0].Message.Content,
 			mbtiParamResp.Usage.PromptTokens,
-			mbtiParamResp.Usage.CompletionTokens,
-			mbtiParamResp.Usage.TotalTokens,
-			// MBTIパラメータなしの結果
-			fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description),
-			mbtiNoParamResp.Choices[0].Message.Content,
 			mbtiNoParamResp.Usage.PromptTokens,
+			normalResp.Usage.CompletionTokens,
+			mbtiParamResp.Usage.CompletionTokens,
 			mbtiNoParamResp.Usage.CompletionTokens,
+			normalResp.Usage.TotalTokens,
+			mbtiParamResp.Usage.TotalTokens,
 			mbtiNoParamResp.Usage.TotalTokens,
 		)
 
-		// 結果を保存
-		if err := saveResultForMBTI(mbti, result); err != nil {
-			log.Printf("Error saving results for %s: %v", mbti.MBTIType, err)
-		}
+		results.WriteString(result)
 	}
 
 	// 結果をファイルに保存
@@ -225,48 +203,24 @@ func main() {
 	}
 }
 
-// 結果をファイルに保存する関数
+// Save results to a single Markdown file
 func saveResults(content string) error {
-	// プロジェクトルートのパスを取得
 	rootDir, err := findProjectRoot()
 	if err != nil {
 		return fmt.Errorf("failed to find project root: %v", err)
 	}
 
-	// result.txtのパスを生成
-	resultPath := filepath.Join(rootDir, "result.txt")
+	// result.mdのパスを生成
+	resultPath := filepath.Join(rootDir, "result.md")
 
 	// ファイルに書き込み
 	if err := os.WriteFile(resultPath, []byte(content), 0644); err != nil {
 		return fmt.Errorf("failed to write results to file: %v", err)
 	}
 
+	// result.md に目次を最上部につける
+
 	log.Printf("Results saved to: %s", resultPath)
-	return nil
-}
-
-// 結果を個別のマークダウンファイルに保存する関数
-func saveResultForMBTI(mbti MBTIConfig, content string) error {
-	rootDir, err := findProjectRoot()
-	if err != nil {
-		return fmt.Errorf("failed to find project root: %v", err)
-	}
-
-	// results ディレクトリを作成
-	resultsDir := filepath.Join(rootDir, "results")
-	if err := os.MkdirAll(resultsDir, 0755); err != nil {
-		return fmt.Errorf("failed to create results directory: %v", err)
-	}
-
-	// MBTIタイプ名のマークダウンファイルを作成
-	fileName := fmt.Sprintf("%s.md", mbti.MBTIType)
-	filePath := filepath.Join(resultsDir, fileName)
-
-	if err := os.WriteFile(filePath, []byte(content), 0644); err != nil {
-		return fmt.Errorf("failed to write results to file: %v", err)
-	}
-
-	log.Printf("Results saved to: %s", filePath)
 	return nil
 }
 
@@ -290,4 +244,10 @@ func findProjectRoot() (string, error) {
 		}
 		dir = parent
 	}
+}
+
+// 改行を適切に処理する関数
+func formatMarkdown(content string) string {
+	// 改行を<br>に変換
+	return strings.ReplaceAll(content, "\n", "<br>")
 }
