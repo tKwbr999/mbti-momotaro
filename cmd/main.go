@@ -12,33 +12,14 @@ import (
 )
 
 type MBTIConfig struct {
-	MBTIType         string
-	Temperature      float32
-	FrequencyPenalty float32
-	PresencePenalty  float32
-	MaxTokens        int
-	Character        string
-	Description      string
+	MBTIType            string
+	Temperature         float32
+	FrequencyPenalty    float32
+	PresencePenalty     float32
+	MaxCompletionTokens int
+	Character           string
+	Description         string
 }
-
-// var mbtiConfigs = []MBTIConfig{
-// 	{"ENFJ", 1.2, 0.6, 0.8, 250, "主人公", "カリスマ的で思いやりのある指導者型"},
-// 	{"ENFP", 1.3, 0.5, 0.6, 300, "運動家", "情熱的で創造的な自由人"},
-// 	{"ENTJ", 1.2, 0.6, 0.8, 250, "指揮官", "大胆不敵な想像力豊かな指導者型"},
-// 	{"ENTP", 1.3, 0.5, 0.6, 300, "討論者", "知的で好奇心旺盛な思想家"},
-// 	{"ESFJ", 1.2, 0.7, 1.1, 220, "領事", "気配り上手な思いやりあるサポーター"},
-// 	{"ESFP", 1.3, 0.5, 0.5, 300, "エンターテイナー", "自由奔放で人生を楽しむ芸能人気質"},
-// 	{"ESTJ", 1.1, 0.8, 1.2, 200, "幹部", "実務的で事実重視の管理者"},
-// 	{"ESTP", 1.3, 0.6, 0.5, 250, "起業家", "機転の利く危険を恐れない実践者"},
-// 	{"INFJ", 0.6, 0.8, 0.7, 150, "提唱者", "静かな理想主義者で思想家"},
-// 	{"INFP", 0.7, 0.6, 0.5, 200, "仲介者", "理想主義的で誠実な調停者"},
-// 	{"INTJ", 0.7, 0.8, 0.7, 150, "建築家", "想像力豊かな戦略的思考の持ち主"},
-// 	{"INTP", 0.8, 0.7, 0.6, 200, "論理学者", "革新的な発明家肌の思想家"},
-// 	{"ISFJ", 0.6, 0.9, 1.0, 120, "擁護者", "献身的で心優しい守護者"},
-// 	{"ISFP", 0.7, 0.8, 0.7, 180, "冒険家", "柔軟で魅力的な芸術家"},
-// 	{"ISTJ", 0.5, 1.0, 1.0, 100, "管理者", "実践的で事実に基づく思考の持ち主"},
-// 	{"ISTP", 0.6, 0.9, 0.8, 150, "巨匠", "大胆で実践的な実験者"},
-// }
 
 var mbtiConfigs_refactor = []MBTIConfig{
 	{"ENFJ", 1.1, 0.7, 0.8, 200, "主人公", "カリスマ的で思いやりのある指導者型"},
@@ -95,14 +76,15 @@ const template = `## %s
 | Standard | %s |
 | MBTI with Parameters | %s |
 | MBTI without Parameters | %s |
+| MBTI with Role System | %s |
 
 ### トークン使用量
 
-| メトリック | Standard | MBTI with Params | MBTI without Params |
-|------------|----------|-------------------|---------------------|
-| Prompt Tokens | %d | %d | %d |
-| Completion Tokens | %d | %d | %d |
-| Total Tokens | %d | %d | %d |
+| メトリック | Standard | MBTI with Params | MBTI without Params | MBTI with Role System |
+|------------|----------|-------------------|---------------------|---------------------|
+| Prompt Tokens | %d | %d | %d | %d |
+| Completion Tokens | %d | %d | %d | %d |
+| Total Tokens | %d | %d | %d | %d |
 `
 
 func main() {
@@ -145,7 +127,7 @@ MBTIタイプごとに異なるAIパラメーターを使用してるため各�
 				Model: openai.GPT4oMini,
 				Messages: []openai.ChatCompletionMessage{
 					{
-						Role:    "user",
+						Role:    openai.ChatMessageRoleUser,
 						Content: prompt,
 					},
 				},
@@ -163,14 +145,14 @@ MBTIタイプごとに異なるAIパラメーターを使用してるため各�
 				Model: openai.GPT4oMini,
 				Messages: []openai.ChatCompletionMessage{
 					{
-						Role:    "user",
+						Role:    openai.ChatMessageRoleUser,
 						Content: fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description),
 					},
 				},
-				Temperature:      mbti.Temperature,
-				FrequencyPenalty: mbti.FrequencyPenalty,
-				PresencePenalty:  mbti.PresencePenalty,
-				MaxTokens:        mbti.MaxTokens,
+				Temperature:         mbti.Temperature,
+				FrequencyPenalty:    mbti.FrequencyPenalty,
+				PresencePenalty:     mbti.PresencePenalty,
+				MaxCompletionTokens: mbti.MaxCompletionTokens,
 			},
 		)
 		if err != nil {
@@ -185,7 +167,29 @@ MBTIタイプごとに異なるAIパラメーターを使用してるため各�
 				Model: openai.GPT4oMini,
 				Messages: []openai.ChatCompletionMessage{
 					{
-						Role:    "user",
+						Role:    openai.ChatMessageRoleUser,
+						Content: fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description),
+					},
+				},
+			},
+		)
+		if err != nil {
+			log.Printf("Error with MBTI no-param prompt for %s: %v", mbti.MBTIType, err)
+			continue
+		}
+
+		// 4. MBTIパラメータあり、RoleSystemでの性格表現
+		mbtiWithRoleSystemResp, err := client.CreateChatCompletion(
+			context.Background(),
+			openai.ChatCompletionRequest{
+				Model: openai.GPT4oMini,
+				Messages: []openai.ChatCompletionMessage{
+					{
+						Role:    openai.ChatMessageRoleUser,
+						Content: prompt,
+					},
+					{
+						Role:    openai.ChatMessageRoleSystem,
 						Content: fmt.Sprintf(promptMBTI, mbti.MBTIType, mbti.Character, mbti.Description),
 					},
 				},
@@ -205,21 +209,25 @@ MBTIタイプごとに異なるAIパラメーターを使用してるため各�
 			mbti.Temperature,
 			mbti.FrequencyPenalty,
 			mbti.PresencePenalty,
-			mbti.MaxTokens,
+			mbti.MaxCompletionTokens,
 			// 応答内容
 			formatMarkdown(normalResp.Choices[0].Message.Content),
 			formatMarkdown(mbtiParamResp.Choices[0].Message.Content),
 			formatMarkdown(mbtiNoParamResp.Choices[0].Message.Content),
+			formatMarkdown(mbtiWithRoleSystemResp.Choices[0].Message.Content),
 			// トークン使用量
 			normalResp.Usage.PromptTokens,
 			mbtiParamResp.Usage.PromptTokens,
 			mbtiNoParamResp.Usage.PromptTokens,
+			mbtiWithRoleSystemResp.Usage.PromptTokens,
 			normalResp.Usage.CompletionTokens,
 			mbtiParamResp.Usage.CompletionTokens,
 			mbtiNoParamResp.Usage.CompletionTokens,
+			mbtiWithRoleSystemResp.Usage.CompletionTokens,
 			normalResp.Usage.TotalTokens,
 			mbtiParamResp.Usage.TotalTokens,
 			mbtiNoParamResp.Usage.TotalTokens,
+			mbtiWithRoleSystemResp.Usage.TotalTokens,
 		)
 
 		results.WriteString(result)
